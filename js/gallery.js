@@ -22,27 +22,6 @@ const images = [
       'https://cdn.pixabay.com/photo/2019/05/16/09/47/beach-4206785_1280.jpg',
     description: 'Aerial Beach View',
   },
-  {
-    preview:
-      'https://cdn.pixabay.com/photo/2016/11/18/16/19/flowers-1835619__340.jpg',
-    original:
-      'https://cdn.pixabay.com/photo/2016/11/18/16/19/flowers-1835619_1280.jpg',
-    description: 'Flower Blooms',
-  },
-  {
-    preview:
-      'https://cdn.pixabay.com/photo/2018/09/13/10/36/mountains-3674334__340.jpg',
-    original:
-      'https://cdn.pixabay.com/photo/2018/09/13/10/36/mountains-3674334_1280.jpg',
-    description: 'Alpine Mountains',
-  },
-  {
-    preview:
-      'https://cdn.pixabay.com/photo/2019/05/16/23/04/landscape-4208571__340.jpg',
-    original:
-      'https://cdn.pixabay.com/photo/2019/05/16/23/04/landscape-4208571_1280.jpg',
-    description: 'Mountain Lake Sailing',
-  },
 ];
 
 const galleryContainer = document.querySelector('.gallery');
@@ -67,9 +46,9 @@ const galleryMarkup = images
 
 galleryContainer.innerHTML = galleryMarkup;
 
-// Відкриття модального вікна з кнопками навігації
 let currentIndex = 0;
 
+// Відображення зображення в модальному вікні
 const showImage = (index) => {
   const { original, description } = images[index];
   return `
@@ -82,11 +61,11 @@ const showImage = (index) => {
   `;
 };
 
+// Обробка кліка по галереї
 galleryContainer.addEventListener('click', (event) => {
   event.preventDefault();
 
-  const isImage = event.target.classList.contains('gallery-image');
-  if (!isImage) return;
+  if (!event.target.classList.contains('gallery-image')) return;
 
   const originalImageURL = event.target.dataset.source;
   currentIndex = images.findIndex(
@@ -97,21 +76,47 @@ galleryContainer.addEventListener('click', (event) => {
     onShow: (instance) => {
       const modalElement = instance.element();
 
+      // Закриття модального вікна
       modalElement.querySelector('.btn-close').addEventListener('click', () => {
         instance.close();
       });
 
+      // Кнопка "Назад"
       modalElement.querySelector('.btn-prev').addEventListener('click', () => {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
         instance.element().innerHTML = showImage(currentIndex);
+        addListeners(instance);
       });
 
+      // Кнопка "Вперед"
       modalElement.querySelector('.btn-next').addEventListener('click', () => {
         currentIndex = (currentIndex + 1) % images.length;
         instance.element().innerHTML = showImage(currentIndex);
+        addListeners(instance);
       });
     },
   });
 
   instance.show();
 });
+
+// Додавання обробників подій для кнопок після зміни зображення
+const addListeners = (instance) => {
+  const modalElement = instance.element();
+
+  modalElement.querySelector('.btn-close').addEventListener('click', () => {
+    instance.close();
+  });
+
+  modalElement.querySelector('.btn-prev').addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    instance.element().innerHTML = showImage(currentIndex);
+    addListeners(instance);
+  });
+
+  modalElement.querySelector('.btn-next').addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    instance.element().innerHTML = showImage(currentIndex);
+    addListeners(instance);
+  });
+};
