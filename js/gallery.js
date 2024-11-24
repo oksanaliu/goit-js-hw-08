@@ -74,6 +74,7 @@ const showImage = (index) => {
   const { original, description } = images[index];
   return `
     <div class="modal-content">
+      <button class="btn-close">&times;</button>
       <button class="btn-prev">&larr;</button>
       <img src="${original}" alt="${description}" class="modal-image">
       <button class="btn-next">&rarr;</button>
@@ -96,22 +97,18 @@ galleryContainer.addEventListener('click', (event) => {
     onShow: (instance) => {
       const modalElement = instance.element();
 
+      modalElement.querySelector('.btn-close').addEventListener('click', () => {
+        instance.close();
+      });
+
       modalElement.querySelector('.btn-prev').addEventListener('click', () => {
         currentIndex = (currentIndex - 1 + images.length) % images.length;
-        const imageElement = instance.element().querySelector('.modal-image');
-        imageElement.style.opacity = '0'; // Зникнення перед зміною
-        setTimeout(() => {
-          instance.element().innerHTML = showImage(currentIndex);
-        }, 300); // Затримка для плавного переходу
+        instance.element().innerHTML = showImage(currentIndex);
       });
 
       modalElement.querySelector('.btn-next').addEventListener('click', () => {
         currentIndex = (currentIndex + 1) % images.length;
-        const imageElement = instance.element().querySelector('.modal-image');
-        imageElement.style.opacity = '0'; // Зникнення перед зміною
-        setTimeout(() => {
-          instance.element().innerHTML = showImage(currentIndex);
-        }, 300); // Затримка для плавного переходу
+        instance.element().innerHTML = showImage(currentIndex);
       });
     },
   });
