@@ -45,27 +45,40 @@ const images = [
 
 const galleryContainer = document.querySelector('.gallery');
 
-// Генеруємо розмітку для галереї
+// Генеруємо розмітку галереї
 const galleryMarkup = images
   .map(
     ({ preview, original, description }) => `
-    <li class="gallery-item">
-      <a class="gallery-link" href="${original}">
-        <img
-          class="gallery-image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-    </li>
-  `
+  <li class="gallery-item">
+    <a class="gallery-link" href="${original}">
+      <img
+        class="gallery-image"
+        src="${preview}"
+        data-source="${original}"
+        alt="${description}"
+      />
+    </a>
+  </li>
+`
   )
   .join('');
 
 galleryContainer.innerHTML = galleryMarkup;
 
-// Відкриття модального вікна
+// Відкриття модального вікна з кнопками навігації
+let currentIndex = 0;
+
+const showImage = (index) => {
+  const { original, description } = images[index];
+  return `
+    <div class="modal-content">
+      <button class="btn-prev">&larr;</button>
+      <img src="${original}" alt="${description}" class="modal-image">
+      <button class="btn-next">&rarr;</button>
+    </div>
+  `;
+};
+
 galleryContainer.addEventListener('click', (event) => {
   event.preventDefault();
 
@@ -73,10 +86,25 @@ galleryContainer.addEventListener('click', (event) => {
   if (!isImage) return;
 
   const originalImageURL = event.target.dataset.source;
+  currentIndex = images.findIndex(
+    (image) => image.original === originalImageURL
+  );
 
-  const instance = basicLightbox.create(`
-      <img src="${originalImageURL}" width="800" height="600">
-    `);
+  const instance = basicLightbox.create(showImage(currentIndex), {
+    onShow: (instance) => {
+      const modalElement = instance.element();
+
+      modalElement.querySelector('.btn-prev').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        instance.element().innerHTML = showImage(currentIndex);
+      });
+
+      modalElement.querySelector('.btn-next').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        instance.element().innerHTML = showImage(currentIndex);
+      });
+    },
+  });
 
   instance.show();
 });
