@@ -47,6 +47,43 @@
         .gallery-image:hover {
             transform: scale(1.05);
         }
+
+        .modal-content {
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-image {
+            max-width: 90vw;
+            max-height: 80vh;
+        }
+
+        .btn-prev,
+        .btn-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .btn-prev {
+            left: 10px;
+        }
+
+        .btn-next {
+            right: 10px;
+        }
+
+        .btn-prev:hover,
+        .btn-next:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
     </style>
 </head>
 

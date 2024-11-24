@@ -45,7 +45,6 @@ const images = [
 
 const galleryContainer = document.querySelector('.gallery');
 
-// Генеруємо розмітку галереї
 const galleryMarkup = images
   .map(
     ({ preview, original, description }) => `
@@ -65,7 +64,6 @@ const galleryMarkup = images
 
 galleryContainer.innerHTML = galleryMarkup;
 
-// Відкриття модального вікна з кнопками навігації
 let currentIndex = 0;
 
 const showImage = (index) => {
@@ -94,15 +92,28 @@ galleryContainer.addEventListener('click', (event) => {
     onShow: (instance) => {
       const modalElement = instance.element();
 
-      modalElement.querySelector('.btn-prev').addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        instance.element().innerHTML = showImage(currentIndex);
-      });
+      const updateContent = () => {
+        modalElement.innerHTML = showImage(currentIndex);
+        addEventListeners();
+      };
 
-      modalElement.querySelector('.btn-next').addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        instance.element().innerHTML = showImage(currentIndex);
-      });
+      const addEventListeners = () => {
+        modalElement
+          .querySelector('.btn-prev')
+          .addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateContent();
+          });
+
+        modalElement
+          .querySelector('.btn-next')
+          .addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateContent();
+          });
+      };
+
+      addEventListeners();
     },
   });
 
