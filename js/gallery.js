@@ -73,50 +73,32 @@ galleryContainer.addEventListener('click', (event) => {
   );
 
   const instance = basicLightbox.create(showImage(currentIndex), {
-    onShow: (instance) => {
-      const modalElement = instance.element();
-
-      // Закриття модального вікна
-      modalElement.querySelector('.btn-close').addEventListener('click', () => {
-        instance.close();
-      });
-
-      // Кнопка "Назад"
-      modalElement.querySelector('.btn-prev').addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        instance.element().innerHTML = showImage(currentIndex);
-        addListeners(instance);
-      });
-
-      // Кнопка "Вперед"
-      modalElement.querySelector('.btn-next').addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        instance.element().innerHTML = showImage(currentIndex);
-        addListeners(instance);
-      });
-    },
+    onShow: (instance) => addListeners(instance),
   });
 
   instance.show();
 });
 
-// Додавання обробників подій для кнопок після зміни зображення
+// Додавання обробників подій для кнопок
 const addListeners = (instance) => {
   const modalElement = instance.element();
 
+  // Кнопка "Закриття"
   modalElement.querySelector('.btn-close').addEventListener('click', () => {
     instance.close();
   });
 
+  // Кнопка "Назад"
   modalElement.querySelector('.btn-prev').addEventListener('click', () => {
     currentIndex = (currentIndex - 1 + images.length) % images.length;
-    instance.element().innerHTML = showImage(currentIndex);
+    modalElement.innerHTML = showImage(currentIndex);
     addListeners(instance);
   });
 
+  // Кнопка "Вперед"
   modalElement.querySelector('.btn-next').addEventListener('click', () => {
     currentIndex = (currentIndex + 1) % images.length;
-    instance.element().innerHTML = showImage(currentIndex);
+    modalElement.innerHTML = showImage(currentIndex);
     addListeners(instance);
   });
 };
